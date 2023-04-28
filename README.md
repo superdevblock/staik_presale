@@ -1,1 +1,1 @@
-# staik_presale_page
+Staik token presale frontend
