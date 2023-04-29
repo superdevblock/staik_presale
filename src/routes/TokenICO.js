@@ -18,6 +18,7 @@ import {
   getTotalPresaleAmount,
   getpTokenPriceForUSDT,
   getBUSDForBNB,
+  getBNBPrice,
   getUserPaidUSDT,
   getStartPresaleTime,
   getEndPresaleTime,
@@ -31,28 +32,28 @@ import {
 import { TOKEN_NAME, TOKEN_CONTRACT_ADDRESS, config, def_config } from '../core/config';
 import Swal from 'sweetalert2';
 
-const customStyles = {	
-  content: {	
-    top: '50%',	
-    left: '50%',	
-    right: 'auto',	
-    bottom: 'auto',	
-    marginLight: '-50%',	
-    marginRight: '-50%',	
-    transform: 'translate(-50%, -50%)',	
-    maxWidth: '500px',	
-    width: '80%',	
-    cursor: 'pointer',	
-    backgroundColor: '#2e2568',	
-    borderRadius: '15px',	
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginLight: '-50%',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    maxWidth: '500px',
+    width: '80%',
+    cursor: 'pointer',
+    backgroundColor: '#2e2568',
+    borderRadius: '15px',
     color: '#FFFFFF',
     maxHeight: '70vh'
-  },	
-  overlay: {	
-    backgroundColor: 'transparent',	
+  },
+  overlay: {
+    backgroundColor: 'transparent',
     cursor: 'pointer',
-  }	
-};	
+  }
+};
 
 const GlobalStyles = createGlobalStyle`
   .ico-container {
@@ -305,12 +306,12 @@ const Loading = styled('div')`
   gap: 15px;
 `;
 
-const help_style = {	
-  padding: "10px",	
-  paddingLeft: "20px",	
-  paddingRight: "20px",	
-  borderRadius: "30px",	
-  border: "1px solid"	
+const help_style = {
+  padding: "10px",
+  paddingLeft: "20px",
+  paddingRight: "20px",
+  borderRadius: "30px",
+  border: "1px solid"
 }
 
 function CapBackGradientSVG() {
@@ -375,48 +376,48 @@ function AmountGradientSVG() {
  * @abstract presale main frontend
  */
 const TokenICO = (props) => {
-  const max_token_amount    = def_config.MAX_PRESALE_AMOUNT;                  // Presale Max Amount
-  const balance             = useSelector(selectors.userBalance);             // user wallet balance
-  const ethApproveState     = useSelector(selectors.userETHApproveState);     //  
-  const usdtApproveState    = useSelector(selectors.userUSDTApproveState);    // 
-  const busdApproveState    = useSelector(selectors.userBUSDApproveState);    // 
-  const btcbApproveState    = useSelector(selectors.userBTCBApproveState);    // 
-  const wallet              = useSelector(selectors.userWallet);              // user wallet
-  const web3                = useSelector(selectors.web3State);               // 
-  
-  const isMobile            = useMediaQuery({ maxWidth: '768px' });           // responsive mobile
+  const max_token_amount = def_config.MAX_PRESALE_AMOUNT;                  // Presale Max Amount
+  const balance = useSelector(selectors.userBalance);             // user wallet balance
+  const ethApproveState = useSelector(selectors.userETHApproveState);     //  
+  const usdtApproveState = useSelector(selectors.userUSDTApproveState);    // 
+  const busdApproveState = useSelector(selectors.userBUSDApproveState);    // 
+  const btcbApproveState = useSelector(selectors.userBTCBApproveState);    // 
+  const wallet = useSelector(selectors.userWallet);              // user wallet
+  const web3 = useSelector(selectors.web3State);               // 
 
-  const [amountPercent, setAmountPercent]       = useState(0);                // sale percent
-  const [curPresale, setCurPresale]             = useState('');
-  const [capPercent, setCapPercent]             = useState('');
-  const [usdtPrice, setusdTPrice]               = useState('');
-  const [maxCap, setMaxCap]                     = useState(0);                // USD
-  const [minCap, setMinCap]                     = useState(0);                // USDT
-  const [maxTotalCap, setMaxTotalCap]           = useState('');               // USDT
-  const [leftCap, setLeftCap]                   = useState('');               // 
-  const [paidUSDT, setPaidUSDT]                 = useState(0);                // paid USDT
-  const [pFiziAmount, setPFiziAmount]           = useState();
-  const [toBNBPrice, settoBNBPrice]             = useState(0);
-  const [maxBNBCap, setmaxBNBCap]               = useState('');
-  const [coinType, setCoinType]                 = useState(0);
-  const [startTime, setStartTime]               = useState(0);
-  const [endTime, setEndTime]                   = useState(0);
-  const [loading, setLoading]                   = useState(false);
-  const [pending, setPending]                   = useState(false);
-  
-  const [fiziBalance, setFiziBalance]           = useState(0);                // balance of TOKEN
-  const [bnbBalance, setBnbBalance]             = useState(0);                // balance of BNB
-  const [busdBalance, setBusdBalance]           = useState(0);                // balance of BUSD
-  const [usdtBalance, setUsdtBalance]           = useState(0);                // balance of USDT
-  const [wethBalance, setWethBalance]           = useState(0);                // balance of WETH
-  const [wbtcBalance, setWbtcBalance]           = useState(0);                // balance of WBTC
-  
-  const [tokenAmountA, setTokenAmountA]         = useState('');
-  const [fromBalance, setFromBalance]           = useState(0);
-  const [toBalance, setToBalance]               = useState(0);
-  const [ended, setEnded]                       = useState(false);
-  const [started, setStarted]                   = useState(false);
-  const [modalIsOpen, setIsOpen]                = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: '768px' });           // responsive mobile
+
+  const [amountPercent, setAmountPercent] = useState(0);                // sale percent
+  const [curPresale, setCurPresale] = useState('');
+  const [capPercent, setCapPercent] = useState('');
+  const [usdtPrice, setusdTPrice] = useState('');
+  const [maxCap, setMaxCap] = useState(0);                // USD
+  const [minCap, setMinCap] = useState(0);                // USDT
+  const [maxTotalCap, setMaxTotalCap] = useState('');               // USDT
+  const [leftCap, setLeftCap] = useState('');               // 
+  const [paidUSDT, setPaidUSDT] = useState(0);                // paid USDT
+  const [pFiziAmount, setPFiziAmount] = useState();
+  const [toBNBPrice, settoBNBPrice] = useState(0);
+  const [maxBNBCap, setmaxBNBCap] = useState('');
+  const [coinType, setCoinType] = useState(0);
+  const [startTime, setStartTime] = useState(0);
+  const [endTime, setEndTime] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [pending, setPending] = useState(false);
+
+  const [fiziBalance, setFiziBalance] = useState(0);                // balance of TOKEN
+  const [bnbBalance, setBnbBalance] = useState(0);                  // balance of BNB
+  const [busdBalance, setBusdBalance] = useState(0);                // balance of BUSD
+  const [usdtBalance, setUsdtBalance] = useState(0);                // balance of USDT
+  const [wethBalance, setWethBalance] = useState(0);                // balance of WETH
+  const [wbtcBalance, setWbtcBalance] = useState(0);                // balance of WBTC
+
+  const [tokenAmountA, setTokenAmountA] = useState('');
+  const [fromBalance, setFromBalance] = useState(0);
+  const [toBalance, setToBalance] = useState(0);
+  const [ended, setEnded] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
   /* ******************************************* INIT ******************************************* */
   const getInitAmount = useCallback(async () => {
     // console.log('[Wallet] = ', wallet);
@@ -424,17 +425,17 @@ const TokenICO = (props) => {
 
     setLoading(true); // loading
 
-    let tempusdtPrice     = 0;
-    let totalMaxCap       = 0;
-    let tempPaidUSDT      = 0;
-    let tempCurPresale    = 0;
-    let tempLeftCap       = 0;
-    let result            = null;
-    /* ******************************************* GET PRESALE START TIME ******************************************* */ 
+    let tempusdtPrice = 0;
+    let totalMaxCap = 0;
+    let tempPaidUSDT = 0;
+    let tempCurPresale = 0;
+    let tempLeftCap = 0;
+    let result = null;
+    /* ******************************************* GET PRESALE START TIME ******************************************* */
     result = await getStartPresaleTime(); // get presale start time from smart contract
     if (result.success) {
       setStartTime(Number(result.start_time));
-      
+
       if (result.start_time < (getUTCNow() / 1000))
         setStarted(true);
       else
@@ -442,19 +443,19 @@ const TokenICO = (props) => {
     } else {
       return;
     }
-    /* ******************************************* GET PRESALE END TIME ******************************************* */ 
+    /* ******************************************* GET PRESALE END TIME ******************************************* */
     result = await getEndPresaleTime(); // get presale end time from smart contract
 
     if (result.success) {
       setEndTime(Number(result.end_time));
-    } 
-    /* ******************************************* GET USDT TOKEN PRICE ******************************************* */ 
+    }
+    /* ******************************************* GET USDT TOKEN PRICE ******************************************* */
     result = await getpTokenPriceForUSDT();
     if (result.success) {
       setusdTPrice(result.usdtPrice);
       tempusdtPrice = Number(result.usdtPrice);
-    } 
-    /* ******************************************* GET TOTAL PRESALE AMOUNT ******************************************* */ 
+    }
+    /* ******************************************* GET TOTAL PRESALE AMOUNT ******************************************* */
     result = await getTotalPresaleAmount();
     if (result.success) {
       const percent = ((max_token_amount - Number(50000)) * 100) / max_token_amount; // sale percent
@@ -464,15 +465,15 @@ const TokenICO = (props) => {
       tempLeftCap = max_token_amount * tempusdtPrice - tempCurPresale;
       setLeftCap(tempLeftCap);
     }
-    /* *******************************************  ******************************************* */ 
+    /* *******************************************  ******************************************* */
     result = await getUserPaidUSDT();
     if (result.success) {
       tempPaidUSDT = Number(result.paidUSDT);
       setPaidUSDT(tempPaidUSDT);
     }
-    /* ******************************************* BALANCE OF ACCOUNT ******************************************* */ 
+    /* ******************************************* BALANCE OF ACCOUNT ******************************************* */
     result = await getBalanceOfAccount();
-    
+
     if (result.success) {
       let fiziBalance = Number(result.fiziBalance);
       let bnbBalance = Number(result.bnbBalance);
@@ -488,7 +489,7 @@ const TokenICO = (props) => {
       setWethBalance(wethBalance);
       setWbtcBalance(wbtcBalance);
     }
-   
+
     if (totalMaxCap <= tempPaidUSDT || tempLeftCap <= 0) {
       setLoading(false);
       return;
@@ -497,14 +498,14 @@ const TokenICO = (props) => {
     setLoading(false);
   }, [web3, max_token_amount, wallet]);
 
-  let subtitle;	
-  const openModal = () => {	
+  let subtitle;
+  const openModal = () => {
     setIsOpen(true);
-  }	
-  const afterOpenModal = () => {	
+  }
+  const afterOpenModal = () => {
     // subtitle.style.color = '#f00';	
-  }	
-  const closeModal = () => {	
+  }
+  const closeModal = () => {
     setIsOpen(false);
   }
   // arsinoe
@@ -518,17 +519,20 @@ const TokenICO = (props) => {
     }
 
     if (value === 0) { // BNB
-      const result = await getBUSDForBNB(fromToken);
+      const result = await getBNBPrice();
 
       if (result.success) {
-        settoBNBPrice(result.value);
-
-        console.log("result.value :", result.value);
-
-        setPFiziAmount(Number(result.value) / usdtPrice);
+        let bnbPrice = result.bnbPrice / 10 ** 8
+        setPFiziAmount(bnbPrice * fromToken / usdtPrice);
       }
-    } else if (value === 1 || value === 2){ // BUSD, USDT
-      setPFiziAmount(fromToken / usdtPrice );
+      // const result = await getBUSDForBNB(fromToken);
+      // if (result.success) {
+      //   settoBNBPrice(result.value);
+      //   console.log("result.value :", result.value);
+      //   setPFiziAmount(Number(result.value) / usdtPrice);
+      // }
+    } else if (value === 1 || value === 2) { // BUSD, USDT
+      setPFiziAmount(fromToken / usdtPrice);
     } else if (value === 3) { // WETH
       const result = await getWethPrice();
 
@@ -557,12 +561,13 @@ const TokenICO = (props) => {
     }
 
     if (coinType === 0) {
-      const result = await getBUSDForBNB(value);
+      const result = await getBNBPrice();
 
       if (result.success) {
-        settoBNBPrice(result.value);
-        setPFiziAmount(Number(result.value) / usdtPrice);
+        let bnbPrice = result.bnbPrice / 10 ** 8;
+        setPFiziAmount(bnbPrice * value / usdtPrice);
       }
+
     } else if (coinType === 1 || coinType === 2) {
       setPFiziAmount(value / usdtPrice);
     } else if (coinType === 3) {
@@ -592,11 +597,12 @@ const TokenICO = (props) => {
     }
 
     if (coinType === 0) {
-      const result = await getBUSDForBNB(1);
+      const result = await getBNBPrice();
 
       if (result.success) {
-        setTokenAmountA(Number(value * usdtPrice / result.value));
-      }
+        let bnbPrice = result.bnbPrice / 10 ** 8;
+        setTokenAmountA((usdtPrice * value) / bnbPrice);
+      }      
     } else if (coinType === 1 || coinType === 2) {
       setTokenAmountA(value * usdtPrice);
     } else if (coinType === 3) {
@@ -633,14 +639,13 @@ const TokenICO = (props) => {
     //   return;
     // }
 
-    if ((coinType === 0 && Number(balance.bnbBalance) < Number(tokenAmountA)) || 
-        (coinType === 1 && Number(balance.busdBalance) < Number(tokenAmountA)) || 
-        (coinType === 2 && Number(balance.usdtBalance) < Number(tokenAmountA)) ||
-        (coinType === 3 && Number(balance.wetgBalance) < Number(tokenAmountA)) ||
-        (coinType === 4 && Number(balance.wbtcBalance) < Number(tokenAmountA)))
-        {
-          toast.error("You have insufficient amount to buy Staik.");
-          return false;
+    if ((coinType === 0 && Number(balance.bnbBalance) < Number(tokenAmountA)) ||
+      (coinType === 1 && Number(balance.busdBalance) < Number(tokenAmountA)) ||
+      (coinType === 2 && Number(balance.usdtBalance) < Number(tokenAmountA)) ||
+      (coinType === 3 && Number(balance.wetgBalance) < Number(tokenAmountA)) ||
+      (coinType === 4 && Number(balance.wbtcBalance) < Number(tokenAmountA))) {
+      toast.error("You have insufficient amount to buy Staik.");
+      return false;
     }
     if (Number(startTime) * 1000 > getUTCNow()) {
       toast.error("Presale has not started yet.");
@@ -667,7 +672,7 @@ const TokenICO = (props) => {
     } else {
       value = Number(balance.wbtcBalance).toFixed(5);
     }
-      
+
     setTokenAmountA(value);
     if (value === 0) {
       setPFiziAmount(0);
@@ -675,13 +680,20 @@ const TokenICO = (props) => {
       return;
     }
     if (coinType === 0) {
-      const result = await getBUSDForBNB(value);
+      const result = await getBNBPrice();
+
       if (result.success) {
-        settoBNBPrice(result.value);
-        setPFiziAmount(Number(result.value) / usdtPrice);
+        let bnbPrice = result.bnbPrice / 10 ** 8
+        setPFiziAmount(bnbPrice * value / usdtPrice);
       }
-    } else if (coinType === 1 || coinType === 2){ // BUSD, USDT
-      setPFiziAmount(value / usdtPrice );        
+
+      // const result = await getBUSDForBNB(value);
+      // if (result.success) {
+      //   settoBNBPrice(result.value);
+      //   setPFiziAmount(Number(result.value) / usdtPrice);
+      // }
+    } else if (coinType === 1 || coinType === 2) { // BUSD, USDT
+      setPFiziAmount(value / usdtPrice);
     } else if (coinType === 3) { // WETH
       const result = await getWethPrice();
 
@@ -707,10 +719,14 @@ const TokenICO = (props) => {
       const result = await buy_pToken(coinAmount, coinType);
       if (result.success) {
         getInitAmount();
+
+        setTokenAmountA('');
+        setPFiziAmount();
+
         Swal.fire({
           icon: 'success',
           title: ' Success',
-          text: 'You have successfully purchased '+ TOKEN_NAME +' from the presale.'
+          text: 'You have successfully purchased ' + TOKEN_NAME + ' from the presale.'
         });
       } else {
         toast.error("Transaction has been failed. " + result.error);
@@ -760,7 +776,7 @@ const TokenICO = (props) => {
     const checkCoinType = async () => {
       if (coinType === 0) {
         setFromBalance(balance.bnbBalance);
-      } else if (coinType === 1){
+      } else if (coinType === 1) {
         setFromBalance(balance.busdBalance);
       } else if (coinType === 2) {
         setFromBalance(balance.usdtBalance);
@@ -843,9 +859,9 @@ const TokenICO = (props) => {
   return (
     <div className='page-container text-center ico-container'>
       <GlobalStyles />
-      <div className='ico-header' style={{width: "100%"}}>
+      <div className='ico-header' style={{ width: "100%" }}>
         <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
-          <p className='ico-title'>Welcome to the { TOKEN_NAME } Presale</p>
+          <p className='ico-title'>Welcome to the {TOKEN_NAME} Presale</p>
         </Reveal>
         <Reveal className='onStep' keyframes={fadeInUp} delay={300} duration={600} triggerOnce>
           {/* <p className="ico-desc">
@@ -854,26 +870,26 @@ const TokenICO = (props) => {
         </Reveal>
         <Reveal className='onStep' keyframes={fadeInUp} delay={600} duration={600} triggerOnce>
           <p className="ico-desc">
-            This is our { TOKEN_NAME } token address
+            This is our {TOKEN_NAME} token address
           </p>
           <p>
-            <a style={{ color: '#00ffd9', overflowWrap: "anywhere", fontFamily: "Lato, Sans-serif", fontSize: "18px", fontWeight: "400" }} href={`https://bscscan.com/address/${ TOKEN_CONTRACT_ADDRESS }`} target="_blank">
-              { TOKEN_CONTRACT_ADDRESS }
+            <a style={{ color: '#00ffd9', overflowWrap: "anywhere", fontFamily: "Lato, Sans-serif", fontSize: "18px", fontWeight: "400" }} href={`https://bscscan.com/address/${TOKEN_CONTRACT_ADDRESS}`} target="_blank">
+              {TOKEN_CONTRACT_ADDRESS}
             </a>
-         </p>
-         <button onClick={openModal} style={ help_style }>&#10068;&nbsp;&nbsp;How To Use</button>	
-         {/* <div style={{ overflow: 'scroll', maxHeight: '70vh' }}> */}
+          </p>
+          <button onClick={openModal} style={help_style}>&#10068;&nbsp;&nbsp;How To Use</button>
+          {/* <div style={{ overflow: 'scroll', maxHeight: '70vh' }}> */}
           <Modal
-            isOpen={modalIsOpen}	
+            isOpen={modalIsOpen}
             onAfterOpen={afterOpenModal}
             onRequestClose={closeModal}
             style={customStyles}
             contentLabel="Example Modal"
             id="howtouse"
-          >	
-            <h2 style={{ fontSize: 31 }} ref={(_subtitle) => (subtitle = _subtitle)}>How to buy on Mobile App</h2>	
-            <button onClick={closeModal} style={{ float: "right", marginTop: "-44px" }} >&#10006;</button>	
-            <div style={{ marginTop: 30 }}>	
+          >
+            <h2 style={{ fontSize: 31 }} ref={(_subtitle) => (subtitle = _subtitle)}>How to buy on Mobile App</h2>
+            <button onClick={closeModal} style={{ float: "right", marginTop: "-44px" }} >&#10006;</button>
+            <div style={{ marginTop: 30 }}>
               <p><span className='font-weight-bold'>Step 1</span>: Open the MetaMask mobile app</p>
               <p><span className='font-weight-bold'>Step 2</span>: Click on the "Browser" button at the bottom of the screen</p>
               <p><span className='font-weight-bold'>Step 3</span>: Type in the URL of the web3 platform</p>
@@ -881,8 +897,8 @@ const TokenICO = (props) => {
               <p><span className='font-weight-bold'>Step 5</span>: Sign the transaction to connect your wallet to the platform</p>
               <p><span className='font-weight-bold'>Step 6</span>: Confirm the transaction</p>
               <p>You will now be connected to the web3 platform and can start using its features.</p>
-              </div>	
-            </Modal>
+            </div>
+          </Modal>
           {/* </div> */}
         </Reveal>
       </div>
@@ -916,7 +932,7 @@ const TokenICO = (props) => {
                             <span className='fs-20 fw-bold'>PRESALE HAS ENDED</span>
                           </div>
                           {/* <p className='fs-20 fw-bold mt-3 mb-1 text-gray'>Your Holdings (Staik): <span className='text-white'>{paidUSDT === '' ? <LoadingSkeleton /> : numberWithCommas(paidUSDT / Number(usdtPrice))}</span></p> */}
-                          <p className='fs-20 fw-bold mt-3 mb-1 text-gray'>Your Holdings ({ TOKEN_NAME }): <span className='text-white'>{paidUSDT === '' ? <LoadingSkeleton /> : numberWithCommas(balance.fiziBalance)}</span></p>
+                          <p className='fs-20 fw-bold mt-3 mb-1 text-gray'>Your Holdings ({TOKEN_NAME}): <span className='text-white'>{paidUSDT === '' ? <LoadingSkeleton /> : numberWithCommas(balance.fiziBalance)}</span></p>
                         </>
                       ) : (
                         <>
@@ -1004,13 +1020,13 @@ const TokenICO = (props) => {
                       <>
                         {/* <p className='fs-20 mb-1'>Presale Amount received <br /><strong>{curPresale === '' ? <LoadingSkeleton /> : '$' + numberWithCommas(curPresale) + ' USDT'}</strong></p>
                         <p className='fs-20 mb-1'>Maximum Presale Amount Allocated <br /><strong>{usdtPrice === '' ? <LoadingSkeleton /> : '$' + numberWithCommas(max_token_amount * Number(usdtPrice)) + ' USDT'}</strong></p> */}
-                        <p className='fs-20 mb-1'>{ TOKEN_NAME } Price <br /><strong>{usdtPrice === '' ? <LoadingSkeleton /> : '$' + numberWithCommas(Number(usdtPrice))}</strong></p>
+                        <p className='fs-20 mb-1'>{TOKEN_NAME} Price <br /><strong>{usdtPrice === '' ? <LoadingSkeleton /> : '$' + numberWithCommas(Number(usdtPrice))}</strong></p>
                       </>
                     ) : (
                       <>
                         {/* <p className='fs-20 mb-1'>Presale Amount received : <strong>{curPresale === '' ? <LoadingSkeleton /> : '$' + numberWithCommas(curPresale) + ' USDT'}</strong></p>
                         <p className='fs-20 mb-1'>Maximum Presale Amount Allocated : <strong>{usdtPrice === '' ? <LoadingSkeleton /> : '$' + numberWithCommas(max_token_amount * Number(usdtPrice)) + ' USDT'}</strong></p> */}
-                        <p className='fs-20 mb-1'>{ TOKEN_NAME } Price : <strong>{usdtPrice === '' ? <LoadingSkeleton /> : '$' + numberWithCommas(Number(usdtPrice))}</strong></p>
+                        <p className='fs-20 mb-1'>{TOKEN_NAME} Price : <strong>{usdtPrice === '' ? <LoadingSkeleton /> : '$' + numberWithCommas(Number(usdtPrice))}</strong></p>
                       </>
                     )}
                   </div>
@@ -1018,7 +1034,7 @@ const TokenICO = (props) => {
                     <>
                       {maxTotalCap <= paidUSDT && false ? (
                         <div className='buy_content'>
-                          <p className='fs-20 mb-1'>You have got the maximum { TOKEN_NAME } on presale.</p>
+                          <p className='fs-20 mb-1'>You have got the maximum {TOKEN_NAME} on presale.</p>
                           <p className='fs-20 mb-1'>Your Holdings (Staik): {paidUSDT === '' ? <LoadingSkeleton /> : numberWithCommas(paidUSDT / Number(usdtPrice))}</p>
                         </div>
                       ) : (
@@ -1026,7 +1042,7 @@ const TokenICO = (props) => {
                           <div className='buy_content'>
                             <div className='row'>
                               <div className='col-md-12'>
-                                <p className='fs-20'>Please enter the { TOKEN_NAME } amount you'd like to purchase</p>
+                                <p className='fs-20'>Please enter the {TOKEN_NAME} amount you'd like to purchase</p>
                                 <div className='presale-input flex'>
                                   <div className="input-token-panel">
                                     <div className='flex justify-between'>
@@ -1062,19 +1078,19 @@ const TokenICO = (props) => {
                                       <div className='flex align-items-center gap-2' style={{ padding: '10px' }}>
                                         <img
                                           loading="lazy"
-                                          width="35" 
+                                          width="35"
                                           height="35"
                                           src="/img/icons/token_icon.png"
-                                          alt={`Coin of ${ TOKEN_NAME }`}
+                                          alt={`Coin of ${TOKEN_NAME}`}
                                         />
-                                        <span className='fs-20'>{ TOKEN_NAME }</span>
+                                        <span className='fs-20'>{TOKEN_NAME}</span>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div> 
+                              </div>
                               <div className='col-md-12 mt-3'>
-                                  {((coinType === 0) || (busdApproveState && coinType === 1) || (usdtApproveState && coinType === 2) || (ethApproveState && coinType === 3) || (btcbApproveState && coinType === 4)) ?
+                                {((coinType === 0) || (busdApproveState && coinType === 1) || (usdtApproveState && coinType === 2) || (ethApproveState && coinType === 3) || (btcbApproveState && coinType === 4)) ?
                                   <LoadingButton
                                     onClick={handleBuy}
                                     endIcon={<></>}
@@ -1084,8 +1100,8 @@ const TokenICO = (props) => {
                                     className="btn-buy btn-main btn6 m-auto fs-20 sm:p-1"
                                     disabled={!started}
                                   >
-                                  BUY { TOKEN_NAME }
-                                  </LoadingButton>:
+                                    BUY {TOKEN_NAME}
+                                  </LoadingButton> :
                                   <LoadingButton
                                     onClick={handleApprove}
                                     endIcon={<></>}
@@ -1100,7 +1116,7 @@ const TokenICO = (props) => {
                               </div>
                               <div className='flex justify-center align-items-center gap-3 mt-3 cursor-pointer add-token-metamask' onClick={addTokenCallback}>
                                 <img src="/img/icons/metamask.png" alt="" width="30"></img>
-                                <span style={{ whiteSpace: 'nowrap' }}> Add { TOKEN_NAME } to MetaMask</span>
+                                <span style={{ whiteSpace: 'nowrap' }}> Add {TOKEN_NAME} to MetaMask</span>
                               </div>
                             </div>
                           </div>

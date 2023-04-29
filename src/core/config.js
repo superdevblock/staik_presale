@@ -17,9 +17,10 @@ export const config = {
     // mainNetUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545',
     // mainNetUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
     // mainNetUrl: 'https://rinkeby.infura.io/v3/',
-    mainNetUrl: 'https://bsc-dataseed.binance.org/',
+    // mainNetUrl: 'https://bsc-dataseed.binance.org/',
+    mainNetUrl: 'https://data-seed-prebsc-2-s3.binance.org:8545',
     
-    PresaleFactoryAddress : "0x2cEFFfef4872cea393512071052d5d0aa7E3c196", // PresaleFactory
+    PresaleFactoryAddress : "0x0d1A6433D768a43a67EbE42b90C6895e5a2E5c13", // PresaleFactory
     PresaleFactoryAbi : presale_abi,
     
     FiziAddress: TOKEN_CONTRACT_ADDRESS,

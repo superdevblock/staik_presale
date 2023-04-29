@@ -412,6 +412,31 @@ export const getEndPresaleTime = async () => {
   }
 }
 
+
+
+export const getBNBPrice = async () => {
+  const web3 = store.getState().auth.web3;
+  if (!web3) return { success: false }
+  try {
+    const PresaleContract = new web3.eth.Contract(PresaleFactoryABI, PresaleFactoryAddress);
+
+    let bnbPrice = await PresaleContract.methods.getBNBPrice().call();
+
+    console.log("bnbPrice : ", bnbPrice);
+    return {
+      success: true,
+      bnbPrice
+    }
+  } catch (error) {
+    console.log('[END Error] = ', error);
+    return {
+      success: false,
+      result: "Something went wrong "
+    }
+  }
+}
+
+
 export const getWethPrice = async () => {
   const web3 = store.getState().auth.web3;
   if (!web3) return { success: false }
@@ -484,17 +509,15 @@ export const getpTokenPriceForUSDT = async () => {
 export const getBUSDForBNB = async (amountIn) => {
   const web3 = store.getState().auth.web3;
   if (!web3) return { success: false }
-
   try {
     const PresaleContract = new web3.eth.Contract(PresaleFactoryABI, PresaleFactoryAddress);
-    let amountOut = await PresaleContract.methods.getLatestBNBPrice(web3.utils.toWei(amountIn.toString(), "ether")).call();
-
+    let wbtcPrice = await PresaleContract.methods.getBNBPrice().call();
     return {
       success: true,
-      value: amountOut / 1e18
+      wbtcPrice
     }
   } catch (error) {
-    console.log('[BUSD For BNB Error] = ', error);
+    console.log('[END Error] = ', error);
     return {
       success: false,
       result: "Something went wrong "
@@ -629,26 +652,26 @@ export const approveTokens = async (coinType) => {
     
     if (coinType === 1) { // BUSD
       const BusdContract = new web3.eth.Contract(BUSDABI, BUSDAddress);
-      await BusdContract.methods.approve(PresaleFactoryAddress, coinAmount).send({ from: accounts[0] });
-      // await BusdContract.methods.approve(PresaleFactoryAddress, ethers.constants.MaxUint256).send({ from: accounts[0] });
+      // await BusdContract.methods.approve(PresaleFactoryAddress, coinAmount).send({ from: accounts[0] });
+      await BusdContract.methods.approve(PresaleFactoryAddress, ethers.constants.MaxUint256).send({ from: accounts[0] });
       store.dispatch(setBUSDApproveState(true));
       checkContractExist();
     } else if (coinType === 2) { // USDT
       const UsdtContract = new web3.eth.Contract(USDTABI, USDTAddress);
-      await UsdtContract.methods.approve(PresaleFactoryAddress, coinAmount).send({ from: accounts[0] });
-      // await UsdtContract.methods.approve(PresaleFactoryAddress, ethers.constants.MaxUint256).send({ from: accounts[0] });
+      // await UsdtContract.methods.approve(PresaleFactoryAddress, coinAmount).send({ from: accounts[0] });
+      await UsdtContract.methods.approve(PresaleFactoryAddress, ethers.constants.MaxUint256).send({ from: accounts[0] });
       store.dispatch(setUSDTApproveState(true));
       checkContractExist();
     } else if (coinType == 3) { // ETH
       const WethContract = new web3.eth.Contract(WETHABI, WETHAddress);
-      await WethContract.methods.approve(PresaleFactoryAddress, coinAmount).send({ from: accounts[0] });
-      // await WethContract.methods.approve(PresaleFactoryAddress, ethers.constants.MaxUint256).send({ from: accounts[0] });
+      // await WethContract.methods.approve(PresaleFactoryAddress, coinAmount).send({ from: accounts[0] });
+      await WethContract.methods.approve(PresaleFactoryAddress, ethers.constants.MaxUint256).send({ from: accounts[0] });
       store.dispatch(setETHApproveState(true));
       checkContractExist();
     } else { // BTCB
       const WbtcContract = new web3.eth.Contract(WBTCABI, WBTCAddress);
-      await WbtcContract.methods.approve(PresaleFactoryAddress, coinAmount).send({ from: accounts[0] });
-      // await WbtcContract.methods.approve(PresaleFactoryAddress, ethers.constants.MaxUint256).send({ from: accounts[0] });
+      // await WbtcContract.methods.approve(PresaleFactoryAddress, coinAmount).send({ from: accounts[0] });
+      await WbtcContract.methods.approve(PresaleFactoryAddress, ethers.constants.MaxUint256).send({ from: accounts[0] });
       store.dispatch(setBTCBApproveState(true));
       checkContractExist();
     }
